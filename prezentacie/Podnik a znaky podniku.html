@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="sk" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Podnik a znaky podniku</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root,:root[data-theme="light"]{--bg:#F6F5F1;--ink:#1F2A30;--card:#FFFFFF;--acc:#C9DCD8;--onc:#1F2A30;--tbg:#E4ECE9;--tfg:#1F2A30;--dbg:#1F2A30;--dfg:#F6F5F1;--l1:#2F6F73;--l2:#B5532F;--bw:2px}
+:root[data-theme="dark"]{--bg:#151D21;--ink:#ECEFEA;--card:#1E292E;--acc:#8DBDBA;--onc:#151D21;--tbg:#1E292E;--tfg:#ECEFEA;--dbg:#0C1214;--dfg:#ECEFEA;--l1:#8DBDBA;--l2:#E0A080;--bw:2px}
+:root[data-theme="contrast"]{--bg:#FFFFFF;--ink:#000000;--card:#FFFFFF;--acc:#BFE3DF;--onc:#000000;--tbg:#FFFFFF;--tfg:#000000;--dbg:#000000;--dfg:#FFFFFF;--l1:#005A5E;--l2:#B01E10;--bw:5px}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:'Bricolage Grotesque',system-ui,sans-serif;background:var(--bg);color:var(--ink);overflow:hidden}
+.slide{position:absolute;inset:0;display:none;padding:10vh 8vw 12vh;flex-direction:column;justify-content:center;gap:3vh}
+.slide.on{display:flex}
+h1{font-size:clamp(3.5rem,11vw,9rem);font-weight:800;line-height:.95;letter-spacing:-.03em}
+h2{font-size:clamp(2rem,4.6vw,3.6rem);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+ul{padding-left:1.2em}
+p,li{font-size:clamp(1.05rem,1.8vw,1.5rem);line-height:1.45;max-width:46ch}
+.grid{display:grid;gap:2vw;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.card{border-radius:22px;padding:2.2vh 1.6vw;background:var(--card);border:var(--bw) solid var(--ink)}
+.card{min-width:0;overflow-wrap:break-word}
+.dense .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.dense .card{padding:1.8vh 1.2vw}
+.dense .card h3{font-size:clamp(1.05rem,1.7vw,1.45rem);hyphens:auto;overflow-wrap:anywhere}
+.dense .card p{font-size:clamp(.9rem,1.25vw,1.1rem);line-height:1.35}
+.card h3{font-size:clamp(1.2rem,2vw,1.7rem);margin-bottom:.6vh}
+.card p{font-size:clamp(.95rem,1.4vw,1.2rem)}
+.card{border-left-width:12px;border-left-color:var(--acc)}
+:root[data-theme="contrast"] .card{border-left-color:var(--ink)}
+.title{background:var(--tbg);color:var(--tfg)}
+.title p{font-size:clamp(1.2rem,2.4vw,2rem);max-width:30ch;font-weight:600}
+.blob{position:absolute;border-radius:50%;z-index:0}
+.slide>*{position:relative;z-index:1}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:center}
+.two svg{width:100%;max-height:56vh}
+.dark{background:var(--dbg);color:var(--dfg)}
+.pill{display:inline-block;padding:.5em 1.1em;border-radius:99px;font-weight:600;font-size:clamp(1rem,1.6vw,1.3rem);margin:.3em .4em .3em 0;background:var(--acc);color:var(--onc)}
+.gf{fill:var(--card);stroke:var(--ink);stroke-width:var(--bw)}
+.gl1{stroke:var(--l1)}.gl2{stroke:var(--l2)}
+.gl1,.gl2{stroke-width:8;stroke-linecap:round}
+.gd{stroke:var(--ink);stroke-width:2;stroke-dasharray:6 6}
+.gp{fill:var(--acc);stroke:var(--ink);stroke-width:var(--bw)}
+.gah{fill:var(--ink)}
+.ga{stroke:var(--ink);stroke-width:5;stroke-linecap:round;fill:none}
+.gt{fill:var(--ink);font-weight:700}
+.bar{position:fixed;left:0;bottom:0;height:8px;background:var(--ink);transition:width .3s;z-index:5}
+.nav{position:fixed;right:3vw;bottom:2.5vh;display:flex;gap:10px;z-index:5;align-items:center;color:var(--ink)}
+.nav.ond{color:var(--dfg)}
+.nav span{font-weight:600}
+.nav button{width:48px;height:48px;border-radius:50%;border:var(--bw) solid var(--ink);background:var(--acc);color:var(--onc);font-size:1.3rem;cursor:pointer;font-family:inherit}
+.nav button:hover{background:var(--acc)}
+.theme{position:fixed;top:calc(2vh + env(safe-area-inset-top,0px));right:3vw;z-index:6;display:flex;border:var(--bw) solid var(--ink);border-radius:99px;overflow:hidden;background:var(--card)}
+.theme button{font:inherit;font-weight:600;font-size:clamp(.85rem,1.2vw,1.05rem);padding:.55em 1em;border:0;background:transparent;color:var(--ink);cursor:pointer;white-space:nowrap}
+.theme button[aria-pressed="true"]{background:var(--acc);color:var(--onc)}
+.theme button:hover{text-decoration:underline}
+:root[data-theme="dark"] .theme button[aria-pressed="true"]{background:var(--acc)}
+:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
+:root[data-theme="contrast"] :focus-visible{outline-color:#000}
+@media(max-width:700px){.dense .grid{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}.slide{overflow:auto;justify-content:flex-start}.theme button span{display:none}}
+</style>
+</head>
+<body>
+
+<div class="theme" role="group" aria-label="Farebná téma (kláves T)">
+  <button data-t="light" aria-pressed="true">&#9728; <span>Svetlá</span></button>
+  <button data-t="dark" aria-pressed="false">&#9790; <span>Tmavá</span></button>
+  <button data-t="contrast" aria-pressed="false">&#9680; <span>Kontrast</span></button>
+</div>
+
+<section class="slide on title">
+  <div class="blob" style="width:42vw;height:42vw;background:var(--acc);right:-8vw;top:-10vw;opacity:.8"></div>
+  <div class="blob" style="width:22vw;height:22vw;background:var(--acc);right:14vw;bottom:-6vw"></div>
+  <h1>Podnik</h1>
+  <p>Pojem a základné znaky podniku.</p>
+</section>
+
+<section class="slide">
+  <h2>Pojem podnik</h2>
+  <p>Podnik je organizovaný súbor hmotných, osobných a nehmotných zložiek podnikania, ktorý slúži na vykonávanie podnikateľskej činnosti.</p>
+  <div class="grid">
+    <div class="card c1"><h3>Hmotné</h3><p>Budovy, stroje, zariadenia, materiál, zásoby.</p></div>
+    <div class="card c2"><h3>Osobné</h3><p>Zamestnanci, manažéri a ich práca.</p></div>
+    <div class="card c3"><h3>Nehmotné</h3><p>Know-how, softvér, značka, obchodné meno, postupy, zákaznícke vzťahy.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Podnik a podnikateľ nie sú to isté</h2>
+  <div class="grid">
+    <div class="card c4"><h3>Podnikateľ</h3><p>Osoba alebo subjekt, ktorý podnikanie vykonáva a rozhoduje o ňom.</p></div>
+    <div class="card c1"><h3>Podnik</h3><p>Organizované zdroje a činnosti, prostredníctvom ktorých sa podnikanie uskutočňuje.</p></div>
+  </div>
+  <p>Autoservis: podnikateľom je majiteľ. Podnikom sú priestory, zdviháky, náradie, mechanici, softvér na objednávky aj dobré meno.</p>
+</section>
+
+<section class="slide dense">
+  <h2>Základné znaky podniku</h2>
+  <div class="grid">
+    <div class="card c1"><h3>Organizovanosť</h3><p>Zdroje a činnosti sú usporiadané a koordinované.</p></div>
+    <div class="card c2"><h3>Ekonomická samostatnosť</h3><p>Rozhoduje o ponuke, práci aj dodávateľoch; limitujú ho zákony, zmluvy a trh.</p></div>
+    <div class="card c3"><h3>Podnikateľské riziko</h3><p>Výsledok nie je istý: zisk, ale aj strata.</p></div>
+    <div class="card c4"><h3>Vstupy a výstupy</h3><p>Vstupy sa menia na výrobky alebo služby.</p></div>
+    <div class="card c1"><h3>Hospodársky cieľ</h3><p>Dlhodobo fungovať a uspokojovať zákazníkov.</p></div>
+    <div class="card c2"><h3>Trhové prostredie</h3><p>Reaguje na zákazníkov, konkurenciu, ceny a technológie.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Vstupy a výstupy</h2>
+  <div class="two">
+    <div>
+      <p>Podnik využíva vstupy: prácu, kapitál, materiál, energiu a informácie. Premieňa ich na výstupy, teda výrobky alebo služby.</p>
+      <p style="margin-top:1.5vh">Ak zákazníci prestanú výrobok kupovať, podnik musí zvážiť zmenu ponuky.</p>
+    </div>
+    <svg viewBox="0 0 440 200" role="img" aria-label="Schéma procesu: vstupy, šípka, podnik, šípka, výstupy">
+      <defs><marker id="ah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path class="gah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+      <rect class="gf" x="4" y="60" width="104" height="80" rx="16"/>
+      <rect class="gf" x="168" y="60" width="104" height="80" rx="16"/>
+      <rect class="gf" x="332" y="60" width="104" height="80" rx="16"/>
+      <line class="ga" x1="114" y1="100" x2="162" y2="100" marker-end="url(#ah)"/>
+      <line class="ga" x1="278" y1="100" x2="326" y2="100" marker-end="url(#ah)"/>
+      <text class="gt" x="56" y="106" font-size="19" text-anchor="middle">vstupy</text>
+      <text class="gt" x="220" y="106" font-size="19" text-anchor="middle">podnik</text>
+      <text class="gt" x="384" y="106" font-size="19" text-anchor="middle">výstupy</text>
+    </svg>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Prípad: rekonštrukcia školy</h2>
+  <div class="grid">
+    <div class="card c1"><h3>Hmotné</h3><p>Dodávka, náradie, lešenie, materiál.</p></div>
+    <div class="card c2"><h3>Osobné</h3><p>Stavbyvedúci, murári, elektrikári, účtovník.</p></div>
+    <div class="card c3"><h3>Nehmotné</h3><p>Projektová dokumentácia, pracovné postupy, značka a skúsenosti.</p></div>
+  </div>
+  <p>Organizovanosť: harmonogram a rozdelenie úloh. Samostatnosť: výber dodávateľa. Riziko: rast cien materiálu alebo oneskorenie prác. Výstup: zrekonštruovaná škola.</p>
+</section>
+
+<section class="slide">
+  <h2>Aktivita vo dvojiciach: 3 minúty</h2>
+  <p>Vyberte si podnik: kaderníctvo, autoservis, e-shop, pekáreň alebo stavebná firma.</p>
+  <div class="grid">
+    <div class="card c1"><h3>Zložky</h3><p>2 hmotné, 2 osobné a 2 nehmotné.</p></div>
+    <div class="card c4"><h3>Riziko</h3><p>Jeden príklad podnikateľského rizika.</p></div>
+    <div class="card c3"><h3>Výstup</h3><p>Výrobok alebo služba.</p></div>
+  </div>
+  <p>Pri vyhodnotení vysvetlite, prečo ste zložku zaradili do danej skupiny.</p>
+</section>
+
+<section class="slide dark">
+  <h2>Čo si zapamätať</h2>
+  <div>
+    <span class="pill">Podnik je organizovaný súbor zdrojov a činností</span>
+    <span class="pill">Má hmotné, osobné a nehmotné zložky</span>
+    <span class="pill">Mení vstupy na výstupy</span>
+    <span class="pill">Nesie podnikateľské riziko</span>
+  </div>
+  <p style="font-weight:600;margin-top:2vh">Prečo je dôležitá organizovanosť? Vysvetlite pojem podnik vlastnými slovami.</p>
+</section>
+
+<div class="bar" id="bar"></div>
+<div class="nav" id="nav">
+  <span id="count"></span>
+  <button id="prev" aria-label="Predchádzajúci slajd">&#8592;</button>
+  <button id="next" aria-label="Ďalší slajd">&#8594;</button>
+</div>
+
+<script>
+const s=[...document.querySelectorAll('.slide')];let i=0;
+const nav=document.getElementById('nav');
+function go(n){i=Math.max(0,Math.min(s.length-1,n));s.forEach((e,k)=>e.classList.toggle('on',k===i));
+document.getElementById('bar').style.width=((i+1)/s.length*100)+'%';
+document.getElementById('count').textContent=(i+1)+' / '+s.length;
+nav.classList.toggle('ond',s[i].classList.contains('dark')||s[i].classList.contains('title')&&false);}
+document.getElementById('next').onclick=()=>go(i+1);
+document.getElementById('prev').onclick=()=>go(i-1);
+
+const themes=['light','dark','contrast'];
+const tb=[...document.querySelectorAll('.theme button')];
+function setTheme(t){document.documentElement.dataset.theme=t;
+tb.forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===t));
+try{localStorage.setItem('podnik-theme',t)}catch(e){}}
+tb.forEach(b=>b.onclick=()=>setTheme(b.dataset.t));
+let saved;try{saved=localStorage.getItem('podnik-theme')}catch(e){}
+setTheme(themes.includes(saved)?saved:'light');
+
+addEventListener('keydown',e=>{
+if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(i+1)}
+if(['ArrowLeft','PageUp'].includes(e.key))go(i-1);
+if(e.key==='t'||e.key==='T'){setTheme(themes[(themes.indexOf(document.documentElement.dataset.theme)+1)%3])}});
+go(0);
+</script>
+</body>
+</html>
