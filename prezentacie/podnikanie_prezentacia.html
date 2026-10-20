@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="sk" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Podnikanie – charakteristika</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root,:root[data-theme="light"]{--bg:#DCE8E3;--ink:#1F3A38;--card:#F4F9F7;--mint:#F2C078;--aqua:#9FC1BB;--lemon:#DCE8E3;--coral:#F7D9A6;--onc:#1F3A38;--tbg:#F2C078;--tfg:#1F3A38;--tb1:#3D6B68;--tb2:#DCE8E3;--dbg:#3D6B68;--dfg:#F4F9F7;--l1:#3D6B68;--l2:#C98A2B;--bw:3px}
+:root[data-theme="dark"]{--bg:#1F3A38;--ink:#DCE8E3;--card:#2C524F;--mint:#F2C078;--aqua:#9FC1BB;--lemon:#DCE8E3;--coral:#F7D9A6;--onc:#1F3A38;--tbg:#3D6B68;--tfg:#F4F9F7;--tb1:#F2C078;--tb2:#1F3A38;--dbg:#142726;--dfg:#DCE8E3;--l1:#7FB0AA;--l2:#DCE8E3;--bw:3px}
+:root[data-theme="contrast"]{--bg:#FFFFFF;--ink:#000000;--card:#FFFFFF;--mint:#F2C078;--aqua:#9FC1BB;--lemon:#DCE8E3;--coral:#F7D9A6;--onc:#000000;--tbg:#F2C078;--tfg:#000000;--tb1:#FFFFFF;--tb2:#DCE8E3;--dbg:#000000;--dfg:#FFFFFF;--l1:#2A4C4A;--l2:#A66A00;--bw:5px}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:'Bricolage Grotesque',system-ui,sans-serif;background:var(--bg);color:var(--ink);overflow:hidden}
+.slide{position:absolute;inset:0;display:none;padding:10vh 8vw 12vh;flex-direction:column;justify-content:center;gap:3vh}
+.slide.on{display:flex}
+h1{font-size:clamp(3.5rem,11vw,9rem);font-weight:800;line-height:.95;letter-spacing:-.03em}
+h2{font-size:clamp(2rem,4.6vw,3.6rem);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+p,li{font-size:clamp(1.05rem,1.8vw,1.5rem);line-height:1.45;max-width:46ch}
+.grid{display:grid;gap:2vw;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.card{border-radius:22px;padding:2.2vh 1.6vw;background:var(--card);border:var(--bw) solid var(--ink)}
+.card h3{font-size:clamp(1.2rem,2vw,1.7rem);margin-bottom:.6vh}
+.card p{font-size:clamp(.95rem,1.4vw,1.2rem)}
+.c1,.c2,.c3,.c4{color:var(--onc);border-color:var(--onc)}
+:root[data-theme="dark"] .c1,:root[data-theme="dark"] .c2,:root[data-theme="dark"] .c3,:root[data-theme="dark"] .c4{border-color:var(--ink)}
+.c1{background:var(--mint)}.c2{background:var(--lemon)}.c3{background:var(--aqua)}.c4{background:var(--coral)}
+.title{background:var(--tbg);color:var(--tfg)}
+.title p{font-size:clamp(1.2rem,2.4vw,2rem);max-width:30ch;font-weight:600}
+.blob{position:absolute;border-radius:50%;z-index:0}
+.slide>*{position:relative;z-index:1}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:center}
+.two svg{width:100%;max-height:56vh}
+.dark{background:var(--dbg);color:var(--dfg)}
+.pill{display:inline-block;padding:.5em 1.1em;border-radius:99px;font-weight:600;font-size:clamp(1rem,1.6vw,1.3rem);margin:.3em .4em .3em 0;background:var(--mint);color:var(--onc)}
+.gf{fill:var(--card);stroke:var(--ink);stroke-width:var(--bw)}
+.gl1{stroke:var(--l1)}.gl2{stroke:var(--l2)}
+.gl1,.gl2{stroke-width:8;stroke-linecap:round}
+.gd{stroke:var(--ink);stroke-width:2;stroke-dasharray:6 6}
+.gp{fill:var(--mint);stroke:var(--ink);stroke-width:var(--bw)}
+.gt{fill:var(--ink);font-weight:700}
+.bar{position:fixed;left:0;bottom:0;height:8px;background:var(--l1);transition:width .3s;z-index:5}
+.nav{position:fixed;right:3vw;bottom:2.5vh;display:flex;gap:10px;z-index:5;align-items:center;color:var(--ink)}
+.nav.ond{color:var(--dfg)}
+.nav span{font-weight:600}
+.nav button{width:48px;height:48px;border-radius:50%;border:var(--bw) solid var(--ink);background:var(--mint);color:var(--onc);font-size:1.3rem;cursor:pointer;font-family:inherit}
+.nav button:hover{background:var(--aqua)}
+.theme{position:fixed;top:calc(2vh + env(safe-area-inset-top,0px));right:3vw;z-index:6;display:flex;border:var(--bw) solid var(--ink);border-radius:99px;overflow:hidden;background:var(--card)}
+.theme button{font:inherit;font-weight:600;font-size:clamp(.85rem,1.2vw,1.05rem);padding:.55em 1em;border:0;background:transparent;color:var(--ink);cursor:pointer;white-space:nowrap}
+.theme button[aria-pressed="true"]{background:var(--mint);color:var(--onc)}
+.theme button:hover{text-decoration:underline}
+:root[data-theme="dark"] .theme button[aria-pressed="true"]{background:var(--mint)}
+:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
+:root[data-theme="contrast"] :focus-visible{outline-color:#000}
+@media(max-width:700px){.two{grid-template-columns:1fr}.slide{overflow:auto;justify-content:flex-start}.theme button span{display:none}}
+ol{padding-left:1.4em}ol li{max-width:60ch;margin:.5vh 0}
+.sm p,.sm li{max-width:60ch}
+.bb1{fill:var(--l1)}.bb2{fill:var(--l2)}.bb3{fill:var(--mint)}
+.bb1,.bb2,.bb3{stroke:var(--ink);stroke-width:var(--bw)}
+.eq{display:inline-block;font-weight:800;font-size:clamp(1.3rem,2.6vw,2.2rem);background:var(--mint);color:var(--onc);border:var(--bw) solid var(--onc);border-radius:16px;padding:.3em .8em;margin:1vh 0}
+.grid.five{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+
+</style>
+</head>
+<body>
+<div class="theme" role="group" aria-label="Farebná téma (kláves T)">
+  <button data-t="light" aria-pressed="true">&#9728; <span>Svetlá</span></button>
+  <button data-t="dark" aria-pressed="false">&#9790; <span>Tmavá</span></button>
+  <button data-t="contrast" aria-pressed="false">&#9680; <span>Kontrast</span></button>
+</div>
+
+<section class="slide on title">
+  <div class="blob" style="width:42vw;height:42vw;background:var(--tb2);right:-8vw;top:-10vw"></div>
+  <div class="blob" style="width:22vw;height:22vw;background:var(--tb1);right:14vw;bottom:-6vw"></div>
+  <h1>Podnikanie</h1>
+  <p>Charakteristika, znaky, podmienky a riziká.</p>
+</section>
+
+<section class="slide">
+  <h2>Pojem podnikanie</h2>
+  <p>Sústavná činnosť vykonávaná samostatne, vo vlastnom mene a na vlastnú zodpovednosť, s cieľom dosiahnuť zisk alebo iný merateľný výsledok.</p>
+  <div class="grid five">
+    <div class="card c1"><h3>Stavebná firma</h3><p>Stavia rodinné domy.</p></div>
+    <div class="card c2"><h3>Kaderníctvo</h3><p>Poskytuje kadernícke služby.</p></div>
+    <div class="card c3"><h3>Pekáreň</h3><p>Vyrába a predáva pečivo.</p></div>
+    <div class="card c4"><h3>E-shop</h3><p>Predáva oblečenie.</p></div>
+    <div class="card c1"><h3>Účtovník</h3><p>Poskytuje účtovné služby.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Základné znaky podnikania</h2>
+  <div class="grid five">
+    <div class="card c1"><h3>Sústavnosť</h3><p>Opakovane, nie jednorazovo. Predaj starého bicykla nie je podnikanie.</p></div>
+    <div class="card c2"><h3>Samostatnosť</h3><p>Sám rozhoduje o cenách, dodávateľoch a zákazkách v medziach zákona.</p></div>
+    <div class="card c3"><h3>Vlastné meno</h3><p>Vystupuje pod svojím alebo obchodným menom a uzatvára zmluvy.</p></div>
+    <div class="card c4"><h3>Vlastná zodpovednosť</h3><p>Zodpovedá za záväzky a dodržiavanie predpisov. Rozsah závisí od právnej formy.</p></div>
+    <div class="card c1"><h3>Ekonomický cieľ</h3><p>Zisk, prípadne iné ekonomické alebo spoločenské ciele.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Zisk a strata</h2>
+  <div class="two">
+    <div>
+      <div class="eq">Zisk = výnosy − náklady</div>
+      <p>Firma s výnosmi 20 000 € a nákladmi 15 000 € má zisk 5 000 €.</p>
+      <p style="margin-top:1.5vh">Ak sú náklady vyššie ako výnosy, podnikateľ dosahuje stratu.</p>
+    </div>
+    <svg viewBox="0 0 380 320" role="img" aria-label="Stĺpcový graf: výnosy 20 000 eur, náklady 15 000 eur, zisk 5 000 eur">
+      <rect class="gf" x="10" y="10" width="360" height="300" rx="18"/>
+      <rect class="bb1" x="50" y="70" width="70" height="200"/>
+      <rect class="bb2" x="155" y="120" width="70" height="150"/>
+      <rect class="bb3" x="260" y="220" width="70" height="50"/>
+      <text class="gt" x="48" y="58" font-size="17">20 000 €</text>
+      <text class="gt" x="153" y="108" font-size="17">15 000 €</text>
+      <text class="gt" x="270" y="208" font-size="17">5 000 €</text>
+      <text class="gt" x="52" y="296" font-size="16">výnosy</text>
+      <text class="gt" x="157" y="296" font-size="16">náklady</text>
+      <text class="gt" x="282" y="296" font-size="16">zisk</text>
+    </svg>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Podnikateľ, podnik, podnikanie</h2>
+  <p>Tri pojmy, ktoré treba rozlišovať. Príklad zo stavebníctva:</p>
+  <div class="grid">
+    <div class="card c1"><h3>Podnikateľ</h3><p>Osoba alebo subjekt, ktorý vykonáva podnikateľskú činnosť. Vedie stavebnú firmu.</p></div>
+    <div class="card c2"><h3>Podnikanie</h3><p>Samotná činnosť: výroba, predaj, služby. Výstavba rodinných domov.</p></div>
+    <div class="card c3"><h3>Podnik</h3><p>Organizovaný celok využívajúci výrobné faktory. Firma so zamestnancami, strojmi a materiálom.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Podmienky podnikania</h2>
+  <div class="grid five">
+    <div class="card c1"><h3>Vek a spôsobilosť</h3><p>Spôsobilosť na právne úkony podľa zákona.</p></div>
+    <div class="card c2"><h3>Bezúhonnosť</h3><p>Vyžaduje sa tam, kde to určuje zákon.</p></div>
+    <div class="card c3"><h3>Oprávnenie</h3><p>Živnostenské oprávnenie alebo iné povolenie.</p></div>
+    <div class="card c4"><h3>Odborná spôsobilosť</h3><p>Vzdelanie, prax alebo kvalifikácia pri niektorých činnostiach.</p></div>
+    <div class="card c1"><h3>Registrácia</h3><p>Úrady, dane a odvody.</p></div>
+  </div>
+  <p><strong>Voľná živnosť</strong>: odbornosť sa spravidla nepreukazuje. Remeselné a viazané živnosti majú osobitné podmienky.</p>
+</section>
+
+<section class="slide">
+  <h2>Riziká podnikania</h2>
+  <div class="grid five">
+    <div class="card c4"><h3>Finančné</h3><p>Podnikateľ môže prísť o vložené peniaze.</p></div>
+    <div class="card c2"><h3>Trhové</h3><p>Zákazníci nemusia mať záujem.</p></div>
+    <div class="card c3"><h3>Konkurenčné</h3><p>Nižšie ceny alebo lepšie služby konkurencie.</p></div>
+    <div class="card c1"><h3>Prevádzkové</h3><p>Porucha stroja, výpadok dodávok, nedostatok ľudí.</p></div>
+    <div class="card c2"><h3>Právne</h3><p>Nedodržanie zmlúv alebo predpisov vedie k sankciám.</p></div>
+  </div>
+  <p>Príklad: firma nakúpi drahý materiál, zákazník zruší objednávku a vznikne strata.</p>
+</section>
+
+<section class="slide">
+  <h2>Význam podnikania pre ekonomiku</h2>
+  <div class="grid">
+    <div class="card c1"><h3>Pracovné miesta</h3><p>Vytvára prácu pre ľudí.</p></div>
+    <div class="card c2"><h3>Výrobky a služby</h3><p>Uspokojuje potreby obyvateľstva.</p></div>
+    <div class="card c3"><h3>Inovácie</h3><p>Podporuje technologický rozvoj.</p></div>
+    <div class="card c4"><h3>HDP a dane</h3><p>Prispieva k HDP a k verejným rozpočtom.</p></div>
+    <div class="card c1"><h3>Konkurencia</h3><p>Vedie k lepšej kvalite a výhodnejším cenám.</p></div>
+  </div>
+</section>
+
+<section class="slide dark sm">
+  <h2>Aktivita vo dvojiciach (5–7 minút)</h2>
+  <p>Založte vlastnú firmu: stavebná firma, kaviareň, kaderníctvo alebo e-shop. Odpovedzte na otázky:</p>
+  <ol>
+    <li>Aký výrobok alebo službu bude firma ponúkať?</li>
+    <li>Kto budú jej zákazníci?</li>
+    <li>Čo bude firma potrebovať na začatie činnosti?</li>
+    <li>Ako bude získavať príjmy?</li>
+    <li>Aké tri riziká môžu ohroziť jej podnikanie?</li>
+  </ol>
+  <p style="font-weight:600">Na záver dvojice stručne predstavia svoje nápady.</p>
+</section>
+
+<div class="bar" id="bar"></div>
+<div class="nav" id="nav">
+  <span id="count"></span>
+  <button id="prev" aria-label="Predchádzajúci slajd">&#8592;</button>
+  <button id="next" aria-label="Ďalší slajd">&#8594;</button>
+</div>
+
+<script>
+const s=[...document.querySelectorAll('.slide')];let i=0;
+const nav=document.getElementById('nav');
+function go(n){i=Math.max(0,Math.min(s.length-1,n));s.forEach((e,k)=>e.classList.toggle('on',k===i));
+document.getElementById('bar').style.width=((i+1)/s.length*100)+'%';
+document.getElementById('count').textContent=(i+1)+' / '+s.length;
+nav.classList.toggle('ond',s[i].classList.contains('dark')||s[i].classList.contains('title')&&false);}
+document.getElementById('next').onclick=()=>go(i+1);
+document.getElementById('prev').onclick=()=>go(i-1);
+
+const themes=['light','dark','contrast'];
+const tb=[...document.querySelectorAll('.theme button')];
+function setTheme(t){document.documentElement.dataset.theme=t;
+tb.forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===t));
+try{localStorage.setItem('podnikanie-theme',t)}catch(e){}}
+tb.forEach(b=>b.onclick=()=>setTheme(b.dataset.t));
+let saved;try{saved=localStorage.getItem('podnikanie-theme')}catch(e){}
+setTheme(themes.includes(saved)?saved:'light');
+
+addEventListener('keydown',e=>{
+if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(i+1)}
+if(['ArrowLeft','PageUp'].includes(e.key))go(i-1);
+if(e.key==='t'||e.key==='T'){setTheme(themes[(themes.indexOf(document.documentElement.dataset.theme)+1)%3])}});
+go(0);
+</script>
+</body>
+</html>
