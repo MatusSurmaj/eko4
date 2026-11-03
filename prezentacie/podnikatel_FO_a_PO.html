@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="sk" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Podnikateľ ako FO a PO</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root,:root[data-theme="light"]{--bg:#FFF3DC;--ink:#3B1A08;--card:#FFFBF2;--a1:#F2701A;--a2:#FFB81C;--a3:#A9BC2A;--a4:#E8604A;--onc:#2A1204;--tbg:#E8590C;--tfg:#240D00;--dbg:#3B1A08;--dfg:#FFF3DC;--l1:#8A2B00;--l2:#006B3C;--bw:3px}
+:root[data-theme="dark"]{--bg:#2A1205;--ink:#FFEFD5;--card:#4A2210;--a1:#F2701A;--a2:#FFB81C;--a3:#A9BC2A;--a4:#E8604A;--onc:#2A1204;--tbg:#4A2210;--tfg:#FFEFD5;--dbg:#150700;--dfg:#FFEFD5;--l1:#FFB81C;--l2:#A9BC2A;--bw:3px}
+:root[data-theme="contrast"]{--bg:#FFFFFF;--ink:#000000;--card:#FFFFFF;--a1:#FF8A1F;--a2:#FFC800;--a3:#B5D12A;--a4:#FF7A5C;--onc:#000000;--tbg:#FFC800;--tfg:#000000;--dbg:#000000;--dfg:#FFFFFF;--l1:#8A2B00;--l2:#006B3C;--bw:5px}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:'Bricolage Grotesque',system-ui,sans-serif;background:var(--bg);color:var(--ink);overflow:hidden}
+.slide{position:absolute;inset:0;display:none;padding:10vh 7vw 12vh;flex-direction:column;justify-content:center;gap:2.5vh;overflow:auto}
+.slide.on{display:flex}
+h1{font-size:clamp(2.6rem,8vw,7rem);font-weight:800;line-height:.98;letter-spacing:-.03em}
+h2{font-size:clamp(1.9rem,4.2vw,3.3rem);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+p,li{font-size:clamp(1.1rem,1.7vw,1.4rem);line-height:1.4}
+p{max-width:62ch}
+.grid{display:grid;gap:1.6vw;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.card{border-radius:22px;padding:2vh 1.5vw;background:var(--card);border:var(--bw) solid var(--ink)}
+.card h3{font-size:clamp(1.2rem,1.9vw,1.6rem);margin-bottom:.6vh}
+.card p,.card li{font-size:clamp(1.05rem,1.35vw,1.2rem)}
+.card ol,.card ul{padding-left:1.3em}
+.c1,.c2,.c3,.c4{color:var(--onc);border-color:var(--onc)}
+:root[data-theme="dark"] .c1,:root[data-theme="dark"] .c2,:root[data-theme="dark"] .c3,:root[data-theme="dark"] .c4{border-color:var(--ink)}
+.c1{background:var(--a1)}.c2{background:var(--a2)}.c3{background:var(--a3)}.c4{background:var(--a4)}
+.title{background:var(--tbg);color:var(--tfg)}
+.title p{font-size:clamp(1.2rem,2.4vw,2rem);max-width:30ch;font-weight:600}
+.blob{position:absolute;border-radius:50%;z-index:0}
+.slide>*{position:relative;z-index:1}
+.dark{background:var(--dbg);color:var(--dfg)}
+.pill{display:inline-block;padding:.5em 1.1em;border-radius:99px;font-weight:600;font-size:clamp(1.05rem,1.6vw,1.3rem);margin:.3em .4em .3em 0;background:var(--a2);color:var(--onc)}
+.ex{border-left:10px solid var(--a1);padding:.4em 1em;font-size:clamp(1.05rem,1.4vw,1.2rem);max-width:70ch}
+table{border-collapse:separate;border-spacing:0;width:100%;border:var(--bw) solid var(--ink);border-radius:18px;overflow:hidden;background:var(--card)}
+th,td{padding:1.1vh 1.1vw;text-align:left;font-size:clamp(.95rem,1.3vw,1.15rem);line-height:1.3;border-bottom:2px solid var(--ink);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{background:var(--a2);color:var(--onc);font-weight:800}
+td:first-child{font-weight:800}
+details summary{cursor:pointer;font-weight:800;margin-top:.8vh;font-size:clamp(1rem,1.3vw,1.15rem)}
+details p{margin-top:.5vh;font-size:clamp(1rem,1.25vw,1.1rem)}
+.bar{position:fixed;left:0;bottom:0;height:8px;background:var(--a4);transition:width .3s;z-index:5}
+.nav{position:fixed;right:3vw;bottom:2.5vh;display:flex;gap:10px;z-index:5;align-items:center;color:var(--ink)}
+.nav.ond{color:var(--dfg)}
+.nav span{font-weight:600}
+.nav button{width:48px;height:48px;border-radius:50%;border:var(--bw) solid var(--ink);background:var(--a2);color:var(--onc);font-size:1.3rem;cursor:pointer;font-family:inherit}
+.nav button:hover{background:var(--a1)}
+.theme{position:fixed;top:calc(2vh + env(safe-area-inset-top,0px));right:3vw;z-index:6;display:flex;border:var(--bw) solid var(--ink);border-radius:99px;overflow:hidden;background:var(--card)}
+.theme button{font:inherit;font-weight:600;font-size:clamp(.85rem,1.2vw,1.05rem);padding:.55em 1em;border:0;background:transparent;color:var(--ink);cursor:pointer;white-space:nowrap}
+.theme button[aria-pressed="true"]{background:var(--a2);color:var(--onc)}
+.theme button:hover{text-decoration:underline}
+:root[data-theme="dark"] .theme button[aria-pressed="true"]{background:var(--a1)}
+:focus-visible{outline:4px solid var(--a4);outline-offset:3px}
+:root[data-theme="contrast"] :focus-visible{outline-color:#000}
+@media(max-width:700px){.slide{justify-content:flex-start}.theme button span{display:none}}
+</style>
+</head>
+<body>
+
+<div class="theme" role="group" aria-label="Farebná téma (kláves T)">
+  <button data-t="light" aria-pressed="true">&#9728; <span>Svetlá</span></button>
+  <button data-t="dark" aria-pressed="false">&#9790; <span>Tmavá</span></button>
+  <button data-t="contrast" aria-pressed="false">&#9680; <span>Kontrast</span></button>
+</div>
+
+<section class="slide on title">
+  <div class="blob" style="width:42vw;height:42vw;background:var(--a2);right:-8vw;top:-10vw;opacity:.9"></div>
+  <div class="blob" style="width:22vw;height:22vw;background:var(--a4);right:14vw;bottom:-6vw"></div>
+  <h1>Podnikateľ<br>ako FO a PO</h1>
+  <p>Fyzická osoba alebo právnická osoba? Ako si vybrať formu podnikania.</p>
+</section>
+
+<section class="slide">
+  <h2>Kto je podnikateľ a čo je podnikanie?</h2>
+  <p>Podnikateľ je osoba, ktorá samostatne vykonáva podnikateľskú činnosť vo vlastnom mene, na vlastnú zodpovednosť a so zámerom dosahovať zisk. Môže ním byť fyzická alebo právnická osoba.</p>
+  <div class="grid">
+    <div class="card c1"><h3>Sústavnosť</h3><p>Činnosť sa opakuje, nemusí byť každý deň.</p></div>
+    <div class="card c2"><h3>Samostatnosť</h3><p>Podnikateľ si činnosť organizuje a rozhoduje o nej.</p></div>
+    <div class="card c3"><h3>Vo vlastnom mene</h3><p>Vystupuje pod vlastným menom alebo názvom.</p></div>
+    <div class="card c4"><h3>Na vlastnú zodpovednosť</h3><p>Nesie dôsledky rozhodnutí a záväzkov.</p></div>
+    <div class="card c2"><h3>Zisk</h3><p>Cieľom je zisk, no nie je zaručený.</p></div>
+  </div>
+  <p class="ex"><b>Príklad:</b> Kto pravidelne vyrába nábytok na objednávku, podniká. Kto raz predá starý bicykel, nepodniká.</p>
+</section>
+
+<section class="slide">
+  <h2>Podnikateľ ako fyzická osoba (FO)</h2>
+  <p>Fyzická osoba je konkrétny človek. Podniká napríklad na základe živnosti, v praxi ide o živnostníka (SZČO).</p>
+  <div class="grid">
+    <div class="card c3"><h3>Podmienky živnosti</h3><ul><li>vek 18 rokov</li><li>spôsobilosť na právne úkony</li><li>bezúhonnosť</li></ul></div>
+    <div class="card c2"><h3>Druhy živností</h3><ul><li><b>Voľné</b>: bez odbornej spôsobilosti</li><li><b>Remeselné</b>: vzdelanie alebo prax</li><li><b>Viazané</b>: upravené osobitnými predpismi</li></ul></div>
+    <div class="card c1"><h3>Výhody</h3><ul><li>jednoduché založenie a ukončenie</li><li>nižšia administratíva</li><li>priama kontrola nad činnosťou</li></ul></div>
+    <div class="card c4"><h3>Nevýhody</h3><ul><li>ručenie celým osobným majetkom</li><li>podnikanie a osobné financie sú prepojené</li></ul></div>
+  </div>
+  <p class="ex"><b>Pozor:</b> živnostník nie je samostatná právnická osoba. Záväzky vznikajú priamo jemu.</p>
+</section>
+
+<section class="slide">
+  <h2>Podnikateľ ako právnická osoba (PO)</h2>
+  <p>Právnická osoba má vlastnú právnu subjektivitu: názov, sídlo, majetok, uzatvára zmluvy. Koná cez orgány alebo zástupcov, napríklad s. r. o. cez konateľa.</p>
+  <div class="grid">
+    <div class="card c1"><h3>s. r. o.</h3><ul><li>základné imanie min. 5 000 €</li><li>min. vklad spoločníka 750 €</li><li>spoločnosť ručí celým majetkom</li><li>spoločník ručí do výšky nesplateného vkladu</li></ul></div>
+    <div class="card c2"><h3>a. s.</h3><ul><li>imanie rozdelené na akcie</li><li>min. 25 000 € (bez výzvy na upisovanie)</li><li>pre väčšie projekty a kapitál</li><li>akcionár za záväzky neručí</li></ul></div>
+    <div class="card c3"><h3>v. o. s. a k. s.</h3><ul><li><b>v. o. s.</b>: min. dve osoby, ručia spoločne a nerozdielne celým majetkom</li><li><b>k. s.</b>: komplementári ručia celým majetkom, komanditisti do výšky vkladu</li></ul></div>
+    <div class="card c4"><h3>Družstvo</h3><p>Spoločenstvo osôb na podnikanie alebo na zabezpečenie potrieb členov. Členovia spravidla neručia.</p></div>
+  </div>
+  <p class="ex"><b>Príklad:</b> Zmluvnou stranou stavebnej firmy ABC, s. r. o., je spoločnosť, nie automaticky jej spoločník či konateľ.</p>
+</section>
+
+<section class="slide">
+  <h2>Porovnanie FO a PO</h2>
+  <table>
+    <tr><th>Kritérium</th><th>FO (napr. živnostník)</th><th>PO (napr. s. r. o.)</th></tr>
+    <tr><td>Kto podniká?</td><td>Konkrétny človek</td><td>Samostatná právnická osoba, spoločnosť</td></tr>
+    <tr><td>Vznik</td><td>Získaním oprávnenia, napr. živnosti</td><td>Založením a zápisom do obchodného registra</td></tr>
+    <tr><td>Majetok a záväzky</td><td>Osobný majetok nie je oddelený</td><td>Spoločnosť má vlastný majetok a záväzky</td></tr>
+    <tr><td>Ručenie</td><td>Spravidla celým majetkom</td><td>Závisí od formy; pri s. r. o. spoločník obmedzene</td></tr>
+    <tr><td>Administratíva</td><td>Zvyčajne jednoduchšia</td><td>Náročnejšia: účtovníctvo, orgány, povinnosti</td></tr>
+  </table>
+</section>
+
+<section class="slide">
+  <h2>Aktivita: akú formu zvoliť?</h2>
+  <p>Navrhnite formu a uveďte aspoň dva dôvody. Správna odpoveď nie je jediná, dôležité je zdôvodnenie. Kliknutím odkryjete možné riešenie.</p>
+  <div class="grid">
+    <div class="card c1"><h3>A: Martin</h3><p>Sám chce poskytovať fotografické služby, s nízkymi nákladmi a čo najjednoduchšie.</p><details><summary>Možné riešenie</summary><p>FO – živnosť, ak činnosť spĺňa podmienky živnostenského zákona.</p></details></div>
+    <div class="card c2"><h3>B: Dvaja kamaráti</h3><p>Stavebná firma, zamestnanci, väčšie zákazky, oddelený firemný a osobný majetok.</p><details><summary>Možné riešenie</summary><p>s. r. o. – samostatná právnická osoba, obmedzené ručenie spoločníkov.</p></details></div>
+    <div class="card c3"><h3>C: Veľký projekt</h3><p>Podnikateľ chce získať kapitál od viacerých investorov prostredníctvom akcií.</p><details><summary>Možné riešenie</summary><p>a. s. – základné imanie je rozdelené na akcie.</p></details></div>
+    <div class="card c4"><h3>D: Dvaja odborníci</h3><p>Podnikajú spoločne a sú ochotní niesť osobnú zodpovednosť.</p><details><summary>Možné riešenie</summary><p>v. o. s. – pozor na neobmedzené ručenie spoločníkov.</p></details></div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Ako založiť podnikanie</h2>
+  <div class="grid">
+    <div class="card c2"><h3>FO – živnostník</h3><ol><li>Vybrať predmet podnikania, overiť druh živnosti.</li><li>Splniť všeobecné a osobitné podmienky.</li><li>Ohlásiť živnosť živnostenskému úradu alebo cez jednotné kontaktné miesto.</li><li>Plniť daňové, odvodové a evidenčné povinnosti.</li></ol></div>
+    <div class="card c1"><h3>PO – napr. s. r. o.</h3><ol><li>Vybrať obchodné meno, sídlo, predmety podnikania.</li><li>Pripraviť zakladateľské dokumenty a oprávnenia.</li><li>Vytvoriť základné imanie, určiť konateľov.</li><li>Podať návrh na zápis do obchodného registra; spoločnosť vzniká dňom zápisu.</li><li>Plniť daňové, účtovné a odvodové povinnosti.</li></ol></div>
+  </div>
+</section>
+
+<section class="slide dark">
+  <h2>Čo si zapamätať</h2>
+  <div>
+    <span class="pill">Podnikanie je sústavné, samostatné, na vlastnú zodpovednosť</span>
+    <span class="pill">FO: jednoduchšie, ručí celým majetkom</span>
+    <span class="pill">PO: vlastný majetok, viac administratívy</span>
+    <span class="pill">s. r. o. a a. s.: obmedzené ručenie</span>
+    <span class="pill">Formu vyberáme podľa cieľov a rizika</span>
+  </div>
+  <p style="font-weight:600;margin-top:2vh">Ďakujem za pozornosť.</p>
+</section>
+
+<div class="bar" id="bar"></div>
+<div class="nav" id="nav">
+  <span id="count"></span>
+  <button id="prev" aria-label="Predchádzajúci slajd">&#8592;</button>
+  <button id="next" aria-label="Ďalší slajd">&#8594;</button>
+</div>
+
+<script>
+const s=[...document.querySelectorAll('.slide')];let i=0;
+const nav=document.getElementById('nav');
+function go(n){i=Math.max(0,Math.min(s.length-1,n));s.forEach((e,k)=>e.classList.toggle('on',k===i));
+document.getElementById('bar').style.width=((i+1)/s.length*100)+'%';
+document.getElementById('count').textContent=(i+1)+' / '+s.length;
+nav.classList.toggle('ond',s[i].classList.contains('dark'));}
+document.getElementById('next').onclick=()=>go(i+1);
+document.getElementById('prev').onclick=()=>go(i-1);
+const themes=['light','dark','contrast'];
+const tb=[...document.querySelectorAll('.theme button')];
+function setTheme(t){document.documentElement.dataset.theme=t;
+tb.forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===t));
+try{localStorage.setItem('podnikatel-theme',t)}catch(e){}}
+tb.forEach(b=>b.onclick=()=>setTheme(b.dataset.t));
+let saved;try{saved=localStorage.getItem('podnikatel-theme')}catch(e){}
+setTheme(themes.includes(saved)?saved:'light');
+addEventListener('keydown',e=>{
+if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(i+1)}
+if(['ArrowLeft','PageUp'].includes(e.key))go(i-1);
+if(e.key==='t'||e.key==='T'){setTheme(themes[(themes.indexOf(document.documentElement.dataset.theme)+1)%3])}});
+go(0);
+</script>
+</body>
+</html>
