@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="sk" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Živnosti</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root,:root[data-theme="light"]{--bg:#F3F1E8;--ink:#2A362D;--card:#FFFFFF;--terra:#C85A32;--ochre:#D49B35;--tint:#B7C6B3;--onc:#16100B;--tbg:#4A5D4E;--tfg:#F6F2E6;--dbg:#2A362D;--dfg:#F6F2E6;--l1:#C85A32;--l2:#4A5D4E;--bw:3px}
+:root[data-theme="dark"]{--bg:#1B231D;--ink:#F1ECDD;--card:#2A362D;--terra:#C85A32;--ochre:#D49B35;--tint:#B7C6B3;--onc:#16100B;--tbg:#4A5D4E;--tfg:#F6F2E6;--dbg:#0F1511;--dfg:#F1ECDD;--l1:#D49B35;--l2:#B7C6B3;--bw:3px}
+:root[data-theme="contrast"]{--bg:#FFFFFF;--ink:#000000;--card:#FFFFFF;--terra:#EC6A3A;--ochre:#F5B72B;--tint:#A9C9A4;--onc:#000000;--tbg:#F5B72B;--tfg:#000000;--dbg:#000000;--dfg:#FFFFFF;--l1:#A8300A;--l2:#1F4A2A;--bw:5px}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:'Bricolage Grotesque',system-ui,sans-serif;background:var(--bg);color:var(--ink);overflow:hidden}
+.slide{position:absolute;inset:0;display:none;padding:11vh 7vw 12vh;flex-direction:column;justify-content:center;gap:2.4vh;overflow:auto}
+.slide.on{display:flex}
+h1{font-size:clamp(3.4rem,11vw,9rem);font-weight:800;line-height:.95;letter-spacing:-.03em}
+h2{font-size:clamp(2rem,4.2vw,3.4rem);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+p,li{font-size:clamp(1.05rem,1.7vw,1.4rem);line-height:1.45;max-width:60ch}
+.grid{display:grid;gap:1.4vw;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.card{border-radius:20px;padding:1.8vh 1.4vw;background:var(--card);border:var(--bw) solid var(--ink)}
+.card h3{font-size:clamp(1.15rem,1.9vw,1.6rem);margin-bottom:.5vh;line-height:1.15}
+.card p{font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.4}
+.c1,.c2,.c3{color:var(--onc);border-color:var(--onc)}
+:root[data-theme="dark"] .c1,:root[data-theme="dark"] .c2,:root[data-theme="dark"] .c3{border-color:var(--ink)}
+.c1{background:var(--terra)}.c2{background:var(--ochre)}.c3{background:var(--tint)}
+.title{background:var(--tbg);color:var(--tfg)}
+.title p{font-size:clamp(1.2rem,2.4vw,2rem);max-width:30ch;font-weight:600}
+.blob{position:absolute;border-radius:50%;z-index:0}
+.slide>*{position:relative;z-index:1}
+.dark{background:var(--dbg);color:var(--dfg)}
+.pill{display:inline-block;padding:.5em 1.1em;border-radius:99px;font-weight:600;font-size:clamp(1rem,1.5vw,1.25rem);margin:.3em .4em .3em 0;background:var(--ochre);color:var(--onc)}
+.rule{height:8px;width:12vw;border-radius:4px;background:var(--l1)}
+.steps{counter-reset:s}
+.steps .card{position:relative;padding-top:4.6vh}
+.steps .card::before{counter-increment:s;content:counter(s);position:absolute;top:1.2vh;left:1.4vw;font-weight:800;font-size:1.4rem;width:2.2rem;height:2.2rem;border-radius:50%;display:grid;place-items:center;background:var(--onc);color:var(--tint)}
+.note{border-left:8px solid var(--l1);padding-left:1.2vw}
+.bar{position:fixed;left:0;bottom:0;height:8px;background:var(--l1);transition:width .3s;z-index:5}
+.nav{position:fixed;right:3vw;bottom:2.5vh;display:flex;gap:10px;z-index:5;align-items:center;color:var(--ink)}
+.nav span{font-weight:600}
+.nav button{width:48px;height:48px;border-radius:50%;border:var(--bw) solid var(--ink);background:var(--ochre);color:var(--onc);font-size:1.3rem;cursor:pointer;font-family:inherit}
+.nav button:hover{background:var(--tint)}
+.theme{position:fixed;top:calc(2vh + env(safe-area-inset-top,0px));right:3vw;z-index:6;display:flex;border:var(--bw) solid var(--ink);border-radius:99px;overflow:hidden;background:var(--card)}
+.theme button{font:inherit;font-weight:600;font-size:clamp(.85rem,1.2vw,1.05rem);padding:.55em 1em;border:0;background:transparent;color:var(--ink);cursor:pointer;white-space:nowrap}
+.theme button[aria-pressed="true"]{background:var(--ochre);color:var(--onc)}
+.theme button:hover{text-decoration:underline}
+:focus-visible{outline:4px solid var(--ochre);outline-offset:3px}
+:root[data-theme="light"] :focus-visible{outline-color:var(--terra)}
+:root[data-theme="contrast"] :focus-visible{outline-color:#000}
+@media(max-width:700px){.slide{justify-content:flex-start}.theme button span{display:none}}
+</style>
+</head>
+<body>
+
+<div class="theme" role="group" aria-label="Farebná téma (kláves T)">
+  <button data-t="light" aria-pressed="true">&#9728; <span>Svetlá</span></button>
+  <button data-t="dark" aria-pressed="false">&#9790; <span>Tmavá</span></button>
+  <button data-t="contrast" aria-pressed="false">&#9680; <span>Kontrast</span></button>
+</div>
+
+<section class="slide on title">
+  <div class="blob" style="width:40vw;height:40vw;background:var(--terra);right:-8vw;top:-12vw"></div>
+  <div class="blob" style="width:20vw;height:20vw;background:var(--ochre);right:12vw;bottom:-6vw"></div>
+  <h1>Živnosti</h1>
+  <p>Ako podnikať na vlastnú zodpovednosť, doma aj v zahraničí.</p>
+</section>
+
+<section class="slide">
+  <h2>Čo je živnosť?</h2>
+  <p>Sústavná činnosť vykonávaná samostatne, vo vlastnom mene, na vlastnú zodpovednosť a za účelom zisku (zákon č. 455/1991 Zb.).</p>
+  <div class="grid">
+    <div class="card c1"><h3>Sústavnosť</h3><p>Nie náhodná jednorazová činnosť, ale zámer ju opakovať.</p></div>
+    <div class="card c2"><h3>Samostatnosť</h3><p>Prácu a podnikanie si organizuješ sám, v medziach zákona.</p></div>
+    <div class="card c3"><h3>Vlastné meno</h3><p>Vystupuješ pod vlastným menom a obchodným menom.</p></div>
+    <div class="card c1"><h3>Vlastná zodpovednosť</h3><p>Nesieš riziko a za záväzky ručíš celým majetkom.</p></div>
+    <div class="card c2"><h3>Zisk</h3><p>Cieľom je kladný výsledok, ale nie je zaručený.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Je to živnosť alebo nie?</h2>
+  <div class="grid">
+    <div class="card c3"><h3>Jednorazový predaj</h3><p>Raz predáš vlastný použitý telefón: spravidla nejde o živnosť.</p></div>
+    <div class="card c1"><h3>Pravidelný nákup a predaj</h3><p>Telefóny nakupuješ na ďalší predaj: ide o podnikanie a potrebuješ oprávnenie.</p></div>
+    <div class="card c2"><h3>Nie každá platená činnosť</h3><p>Niektoré činnosti sú z živnostenského zákona vylúčené, napríklad viaceré regulované povolania.</p></div>
+  </div>
+  <p class="note">Zamestnanec vs. živnostník: pri živnosti máš väčšiu slobodu aj väčšie riziko. Ktoré ti viac vyhovuje?</p>
+</section>
+
+<section class="slide">
+  <h2>Kto môže podnikať a aký druh živnosti</h2>
+  <div><span class="pill">Vek aspoň 18 rokov</span><span class="pill">Spôsobilosť na právne úkony</span><span class="pill">Bezúhonnosť</span></div>
+  <div class="grid">
+    <div class="card c3"><h3>Voľná</h3><p>Odborná spôsobilosť sa nepreukazuje. Napríklad reklamné a administratívne služby.</p></div>
+    <div class="card c2"><h3>Remeselná</h3><p>Vzdelanie a prax podľa zákona. Murárstvo, kaderníctvo, stolárstvo.</p></div>
+    <div class="card c1"><h3>Viazaná</h3><p>Osobitná odborná spôsobilosť, napríklad autoškola.</p></div>
+  </div>
+  <p class="note">Chýba ti kvalifikácia? Môžeš ustanoviť <b>zodpovedného zástupcu</b>, spravidla v pracovnom pomere. Podnikateľom a ručiteľom však zostávaš ty.</p>
+</section>
+
+<section class="slide">
+  <h2>Zodpovedný zástupca (§ 11)</h2>
+  <div class="grid">
+    <div class="card c3"><h3>Kto to je</h3><p>Fyzická osoba, ktorá odborne zabezpečuje živnosť, keď ju podnikateľ nespĺňa sám. Napríklad Jana pre Petrovo kaderníctvo.</p></div>
+    <div class="card c2"><h3>Pracovný vzťah</h3><p>Spravidla v pracovnom pomere. Výnimky: manžel, príbuzný v priamom rade, súrodenec, spoločník či člen firmy.</p></div>
+    <div class="card c1"><h3>Podmienky</h3><p>Spĺňa všeobecné aj osobitné podmienky, má bydlisko alebo pobyt na Slovensku. Spravidla len v jednej prevádzkarni.</p></div>
+    <div class="card c3"><h3>Oznamovanie</h3><p>Ustanovenie aj skončenie funkcie sa oznamuje úradu do 15 dní. Nového zástupcu treba ustanoviť do 15 dní.</p></div>
+  </div>
+  <p class="note">Nie je to „požičaný diplom“: musí reálne dohliadať na odbornosť. Podnikateľ ostáva držiteľom oprávnenia a ručí za svoje záväzky.</p>
+</section>
+
+<section class="slide">
+  <h2>Ručenie a podnikateľské riziko</h2>
+  <div class="grid">
+    <div class="card c1"><h3>Živnostník</h3><p>Ručí celým majetkom. Nie je oddelený „majetok firmy“.</p></div>
+    <div class="card c2"><h3>Príklad</h3><p>Požičiaš si 8 000 € na dielňu a nevieš splatiť: veriteľ môže vymáhať aj z osobného majetku.</p></div>
+    <div class="card c3"><h3>Spoločník s. r. o.</h3><p>Spravidla neručí celým osobným majetkom, ale konateľ môže niesť zodpovednosť za vlastné porušenie povinností.</p></div>
+  </div>
+  <p class="note">Zváž poistenie zodpovednosti za škodu, najmä pri remeselných a stavebných prácach.</p>
+</section>
+
+<section class="slide">
+  <h2>Právny rámec a úrady</h2>
+  <div class="grid">
+    <div class="card c3"><h3>Zákony</h3><p>Živnostenský zákon 455/1991 Zb., Obchodný zákonník 513/1991 Zb., zákon o dani z príjmov 595/2003, o zdravotnom poistení 580/2004 a o sociálnom poistení 461/2003.</p></div>
+    <div class="card c2"><h3>Úrady</h3><p>Okresný úrad (živnostenský úrad a jednotné kontaktné miesto), finančná správa, zdravotná a Sociálna poisťovňa.</p></div>
+    <div class="card c1"><h3>Podľa činnosti</h3><p>Ochrana spotrebiteľa, BOZP, požiarna ochrana, hygiena, stavebné predpisy, ochrana osobných údajov.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Ako si založiť živnosť</h2>
+  <div class="grid steps">
+    <div class="card c3"><h3>Vybrať činnosť</h3><p>Konkrétny predmet podnikania a jeho druh.</p></div>
+    <div class="card c2"><h3>Overiť podmienky</h3><p>§ 6 a § 7, doklady o vzdelaní a praxi.</p></div>
+    <div class="card c1"><h3>Miesto podnikania</h3><p>Adresa a prípadná prevádzkareň.</p></div>
+    <div class="card c3"><h3>Pripraviť doklady</h3><p>Obchodné meno, údaje, oprávnenie na priestor.</p></div>
+    <div class="card c2"><h3>Ohlásiť</h3><p>Okresný úrad alebo slovensko.sk.</p></div>
+    <div class="card c1"><h3>Zaplatiť poplatok</h3><p>Pred podaním over aktuálny sadzobník.</p></div>
+    <div class="card c3"><h3>Počkať na osvedčenie</h3><p>Pri úplnom ohlásení do 3 pracovných dní.</p></div>
+    <div class="card c2"><h3>Skontrolovať registrácie</h3><p>DIČ, poistenie, fakturácia, evidencia.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Pred prvou zákazkou</h2>
+  <div class="grid">
+    <div class="card c1"><h3>Oprávnenie</h3><p>Platné oprávnenie na konkrétnu činnosť a osobitné povolenia.</p></div>
+    <div class="card c2"><h3>Priestory</h3><p>Miesto podnikania a prevádzkareň. Hygienické, stavebné, požiarne a bezpečnostné požiadavky.</p></div>
+    <div class="card c3"><h3>Evidencia</h3><p>Fakturácia, príjmy a výdavky. Zisti, či potrebuješ eKasu.</p></div>
+    <div class="card c1"><h3>Zmluvy a údaje</h3><p>Zmluvy, obchodné podmienky, reklamácie a ochrana osobných údajov.</p></div>
+    <div class="card c2"><h3>Zamestnanci</h3><p>Povinnosti voči poisťovniam, daňovému úradu, pracovné právo a BOZP.</p></div>
+    <div class="card c3"><h3>Poistenie</h3><p>Poistenie zodpovednosti za škodu.</p></div>
+  </div>
+  <p class="note">Prerušenie alebo ukončenie živnosti sa rieši cez živnostenský úrad. Ukončenie nevymaže dlhy ani povinnosť podať priznanie za obdobie podnikania.</p>
+</section>
+
+<section class="slide">
+  <h2>Modelová situácia: Jana otvára kaderníctvo</h2>
+  <div class="grid">
+    <div class="card c3"><h3>1 až 2: oprávnenie</h3><p>Overí, že ide o remeselnú živnosť. Ak nespĺňa odbornú spôsobilosť, zváži zodpovedného zástupcu.</p></div>
+    <div class="card c2"><h3>3 až 4: ohlásenie</h3><p>Vyberie meno, miesto a predmet podnikania. Ohlási na okresnom úrade alebo cez slovensko.sk.</p></div>
+    <div class="card c1"><h3>5 až 7: prevádzka</h3><p>Vybaví prevádzkareň, skontroluje DIČ a poistenie, zabezpečí evidenciu, fakturáciu a prípadne eKasu.</p></div>
+  </div>
+  <p class="note">Diskusia: Zmení sa jej odvodová situácia, ak podniká popri zamestnaní? Prečo rieši aj priestor, nielen oprávnenie?</p>
+</section>
+
+<section class="slide">
+  <h2>Lehoty, dane a odvody</h2>
+  <div class="grid">
+    <div class="card c1"><h3>15 dní</h3><p>Oznámenie zmien živnostenskému úradu. Pri neúplnom ohlásení je lehota na doplnenie aspoň 15 dní.</p></div>
+    <div class="card c2"><h3>31. marec</h3><p>Daňové priznanie typ B za minulý rok, elektronicky.</p></div>
+    <div class="card c3"><h3>Paušál 60 %</h3><p>Výdavky z príjmov, najviac 20 000 € ročne. Platiteľ DPH ho použiť nemôže.</p></div>
+    <div class="card c1"><h3>Sociálne poistenie 2026</h3><p>Pri novej SZČO spravidla od 6. mesiaca po získaní oprávnenia. Sleduj oznámenie Sociálnej poisťovne.</p></div>
+  </div>
+  <p class="note">DIČ pridelí finančná správa sama. DIČ nie je to isté ako IČO. Zdravotné preddavky závisia od tvojej situácie.</p>
+</section>
+
+<section class="slide">
+  <h2>Dane a DPH</h2>
+  <div class="grid">
+    <div class="card c3"><h3>DIČ a IČO</h3><p>DIČ pridelí finančná správa z úradnej moci. Nie je to to isté ako IČO.</p></div>
+    <div class="card c2"><h3>Výdavky</h3><p>Skutočné alebo paušálne: 60 % z príjmov, najviac 20 000 €, plus zaplatené poistné.</p></div>
+    <div class="card c1"><h3>Priznanie</h3><p>Daňové priznanie typ B podávaš elektronicky, ak ti vznikne povinnosť.</p></div>
+    <div class="card c3"><h3>DPH</h3><p>Platiteľom sa staneš dobrovoľne alebo po splnení zákonných podmienok. Hranice sa menili, over ich vždy aktuálne.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Poistenie od roku 2026</h2>
+  <div class="grid">
+    <div class="card c1"><h3>Zdravotné</h3><p>Preddavky závisia od situácie. Zamestnanec alebo poistenec štátu platí inak. Poisťovňa robí ročné zúčtovanie.</p></div>
+    <div class="card c2"><h3>Sociálne: vznik</h3><p>Od 1. 1. 2026 spravidla od 1. dňa 6. mesiaca po mesiaci, v ktorom si získal oprávnenie.</p></div>
+    <div class="card c3"><h3>Sociálne: sumy</h3><p>Príjmový test 2 876,90 €. Pri osobitnom vymeriavacom základe poistné 131,34 € mesačne.</p></div>
+  </div>
+  <p class="note">Odvody závisia od dátumu začatia, príjmov a súbehu so zamestnaním. Vychádzaj z oznámenia Sociálnej poisťovne, nie zo starej poučky.</p>
+</section>
+
+<section class="slide">
+  <h2>Živnosť v zahraničí</h2>
+  <div class="grid">
+    <div class="card c3"><h3>Dočasne alebo trvalo</h3><p>V EÚ môžeš dočasne poskytovať služby. Pri trvalom podnikaní vzniká miestna registrácia.</p></div>
+    <div class="card c2"><h3>Regulované profesie</h3><p>Môže byť potrebné oznámenie alebo uznanie kvalifikácie v cieľovej krajine.</p></div>
+    <div class="card c1"><h3>Dokument A1</h3><p>Určuje, kde si sociálne poistený. Žiadosť podaj vopred, vybavenie trvá najviac 45 dní.</p></div>
+    <div class="card c3"><h3>Dane a DPH</h3><p>Rozhoduje rezidencia a stála prevádzkareň. Pred prvou službou firme z EÚ over registráciu podľa § 7a.</p></div>
+  </div>
+  <p class="note">Slovenská živnosť nie je univerzálne povolenie pre každú krajinu a každú činnosť.</p>
+</section>
+
+<section class="slide">
+  <h2>Zahraničie: kde platia pravidlá EÚ</h2>
+  <div class="grid">
+    <div class="card c3"><h3>EÚ, EHP, Švajčiarsko</h3><p>Sloboda poskytovania služieb. Pravidlá cieľového štátu však musíš dodržať.</p></div>
+    <div class="card c2"><h3>Spojené kráľovstvo</h3><p>Po brexite over osobitne pravidlá dohody a miestne predpisy.</p></div>
+    <div class="card c1"><h3>USA, Kanada, SAE</h3><p>Jednotný trh EÚ neplatí: treba povolenia, víza, dane a registráciu.</p></div>
+    <div class="card c3"><h3>Regulované profesie</h3><p>Pri dočasnej službe môže byť potrebné písomné oznámenie a doklady o kvalifikácii. Elektrikár v Nemecku nemá automatické oprávnenie.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Dokument A1</h2>
+  <div class="grid">
+    <div class="card c3"><h3>Čo to je</h3><p>Potvrdzuje, ktorému štátu platíš sociálne poistenie. Nie je to oprávnenie ani pracovné povolenie.</p></div>
+    <div class="card c2"><h3>Podmienky</h3><p>Oprávnenie na Slovensku aspoň 2 mesiace, podobná činnosť, najviac 24 mesiacov v zahraničí a zázemie na Slovensku.</p></div>
+    <div class="card c1"><h3>Žiadosť</h3><p>Podaj vopred Sociálnej poisťovni, vystavenie najneskôr do 45 dní.</p></div>
+  </div>
+  <p class="note">Pri práci vo viacerých štátoch sa sleduje orientačne 25 % času alebo príjmu v štáte bydliska.</p>
+</section>
+
+<section class="slide">
+  <h2>Dane zo zahraničných príjmov</h2>
+  <div class="grid">
+    <div class="card c3"><h3>Rezidencia</h3><p>Určuje ju trvalý byt, stredisko životných záujmov a obvyklý pobyt, nie občianstvo.</p></div>
+    <div class="card c2"><h3>Stála prevádzkareň</h3><p>Ak nevznikne, príjem sa spravidla zdaňuje na Slovensku. Ak vznikne, môže zdaniť aj zahraničný štát.</p></div>
+    <div class="card c1"><h3>Mýtus 183 dní</h3><p>Nie je to univerzálna hranica pre živnostníkov. Skúma sa prevádzkareň a zmluva o zamedzení dvojitého zdanenia.</p></div>
+  </div>
+  <p class="note">Grafik z Bratislavy pre rakúsku firmu online: daň z príjmov v Rakúsku automaticky nevzniká, ale DPH treba preveriť.</p>
+</section>
+
+<section class="slide">
+  <h2>DPH pri službách do EÚ</h2>
+  <div class="grid">
+    <div class="card c1"><h3>Služba firme (B2B)</h3><p>Pri všeobecnom pravidle miesta dodania sa registruješ podľa § 7a ešte pred prvou službou. Hodnota zákazky nerozhoduje.</p></div>
+    <div class="card c2"><h3>Po registrácii</h3><p>Nestaneš sa plným platiteľom. Používaš IČ DPH a podľa potreby podávaš súhrnný výkaz.</p></div>
+    <div class="card c3"><h3>Nákup zo zahraničia</h3><p>Reklamu od firmy z EÚ môžeš odoberať až po preverení § 7a a odvodu slovenskej DPH.</p></div>
+  </div>
+  <p class="note">Súkromné osoby, nehnuteľnosti, stavebné práce a doprava majú iné pravidlá miesta dodania.</p>
+</section>
+
+<section class="slide">
+  <h2>Tri modelové situácie</h2>
+  <div class="grid">
+    <div class="card c1"><h3>Murár v Rakúsku</h3><p>Dvojmesačná rekonštrukcia: preveriť oznámenie, kvalifikáciu, A1, DPH a stálu prevádzkareň.</p></div>
+    <div class="card c2"><h3>Grafik pre českú firmu</h3><p>Práca z bytu: § 7a, údaje odberateľa, režim fakturácie, rezidencia a zmluva.</p></div>
+    <div class="card c3"><h3>Presun do Nemecka</h3><p>Dlhodobé podnikanie už nie je dočasná služba: nemecká registrácia, dane, poistenie a zmena rezidencie.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Kontrolný zoznam pred zákazkou</h2>
+  <div class="grid">
+    <div class="card c3"><h3>Kam idem</h3><p>EÚ, EHP, Švajčiarsko, Spojené kráľovstvo alebo mimo? Dočasne alebo trvalo?</p></div>
+    <div class="card c2"><h3>Môžem tam pracovať</h3><p>Je činnosť regulovaná? Treba uznanie kvalifikácie, oznámenie alebo registráciu?</p></div>
+    <div class="card c1"><h3>Poistenie a dane</h3><p>PD A1 vopred, stála prevádzkareň, dane a § 7a o DPH.</p></div>
+    <div class="card c3"><h3>Papiere</h3><p>Zmluva, poistenie zodpovednosti a doklady o kvalifikácii.</p></div>
+  </div>
+</section>
+
+<section class="slide dark">
+  <h2>Čo si zapamätať</h2>
+  <div>
+    <span class="pill">Živnosť = samostatne, sústavne, na vlastné riziko</span>
+    <span class="pill">Druh živnosti určuje odbornú spôsobilosť</span>
+    <span class="pill">Ručíš celým majetkom</span>
+    <span class="pill">Odvody sa menia, vychádzaj z aktuálnych pravidiel</span>
+    <span class="pill">V zahraničí over A1, dane, DPH a miestne povolenia</span>
+  </div>
+  <p style="font-weight:600;margin-top:1.5vh">Aktivita: v skupinách priprav kontrolný zoznam pre murára v Rakúsku, grafika v Česku, kaderníčku v Nemecku alebo IT konzultanta v Poľsku.</p>
+</section>
+
+<div class="bar" id="bar"></div>
+<div class="nav" id="nav">
+  <span id="count"></span>
+  <button id="prev" aria-label="Predchádzajúci slajd">&#8592;</button>
+  <button id="next" aria-label="Ďalší slajd">&#8594;</button>
+</div>
+
+<script>
+const s=[...document.querySelectorAll('.slide')];let i=0;
+const nav=document.getElementById('nav');
+function go(n){i=Math.max(0,Math.min(s.length-1,n));s.forEach((e,k)=>e.classList.toggle('on',k===i));
+document.getElementById('bar').style.width=((i+1)/s.length*100)+'%';
+document.getElementById('count').textContent=(i+1)+' / '+s.length;
+const c=s[i].classList;nav.style.color=c.contains('dark')?'var(--dfg)':c.contains('title')?'var(--tfg)':'var(--ink)';}
+document.getElementById('next').onclick=()=>go(i+1);
+document.getElementById('prev').onclick=()=>go(i-1);
+const themes=['light','dark','contrast'];
+const tb=[...document.querySelectorAll('.theme button')];
+function setTheme(t){document.documentElement.dataset.theme=t;
+tb.forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===t));
+try{localStorage.setItem('zivnosti-theme',t)}catch(e){}}
+tb.forEach(b=>b.onclick=()=>setTheme(b.dataset.t));
+let saved;try{saved=localStorage.getItem('zivnosti-theme')}catch(e){}
+setTheme(themes.includes(saved)?saved:'light');
+addEventListener('keydown',e=>{
+if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(i+1)}
+if(['ArrowLeft','PageUp'].includes(e.key))go(i-1);
+if(e.key==='t'||e.key==='T'){setTheme(themes[(themes.indexOf(document.documentElement.dataset.theme)+1)%3])}});
+go(0);
+</script>
+</body>
+</html>
